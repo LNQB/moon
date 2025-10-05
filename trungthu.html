@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Trung Thu - Em Bé Yêu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #2c1b47, #5e3a8c, #ff66b2, #2c1b47);
+            background-size: 400%;
+            font-family: 'Comic Neue', 'Comic Sans MS', sans-serif;
+            overflow: hidden;
+            position: relative;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #2c1b47, #ff66b2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-text {
+            color: white;
+            font-size: 1.8em;
+            font-family: 'Great Vibes', cursive;
+            text-shadow: 0 0 15px #ff99cc, 0 0 25px #ff66b2;
+            animation: pulseText 1.5s infinite;
+            margin-bottom: 30px;
+        }
+        @keyframes pulseText {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .loading-balloon {
+            width: 50px;
+            height: 70px;
+            background: radial-gradient(circle, #ff4d4d, #ff9999);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            box-shadow: 0 0 25px #ff4d4d;
+            animation: floatLoading 5s infinite ease-in-out;
+            z-index: 21;
+        }
+        .loading-balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid #ff4d4d;
+        }
+        .loading-heart {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ff4d4d;
+            transform: rotate(-45deg);
+            animation: floatHeart 4s infinite ease-in-out;
+            z-index: 21;
+        }
+        .loading-heart::before,
+        .loading-heart::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ff4d4d;
+            border-radius: 50%;
+        }
+        .loading-heart::before {
+            top: -15px;
+            left: 0;
+        }
+        .loading-heart::after {
+            left: 15px;
+            top: 0;
+        }
+        .loading-balloon:nth-child(1) { left: 15%; top: 25%; animation-delay: 0s; }
+        .loading-balloon:nth-child(2) { right: 15%; top: 35%; animation-delay: 1s; }
+        .loading-balloon:nth-child(3) { left: 25%; top: 55%; animation-delay: 2s; }
+        .loading-heart:nth-child(4) { left: 20%; top: 20%; animation-delay: 0.5s; }
+        .loading-heart:nth-child(5) { right: 20%; top: 50%; animation-delay: 1.5s; }
+        .loading-heart:nth-child(6) { left: 30%; top: 40%; animation-delay: 1s; }
+        @keyframes floatLoading {
+            0%, 100% { transform: translateY(0) rotate(5deg); }
+            50% { transform: translateY(-40px) rotate(-5deg); }
+        }
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0) rotate(-45deg) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-50px) rotate(-45deg) scale(1.2); opacity: 1; }
+        }
+
+        /* Message Popup */
+        .message-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px #ff66b2;
+            color: #2c1b47;
+            font-size: 1.2em;
+            font-family: 'Great Vibes', cursive;
+            text-align: center;
+            max-width: 80%;
+            z-index: 15;
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .message-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        .message-heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff4d4d;
+            transform: rotate(-45deg);
+            animation: floatMessageHeart 3s infinite ease-in-out;
+        }
+        .message-heart::before,
+        .message-heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff4d4d;
+            border-radius: 50%;
+        }
+        .message-heart::before {
+            top: -10px;
+            left: 0;
+        }
+        .message-heart::after {
+            left: 10px;
+            top: 0;
+        }
+        .message-heart:nth-child(1) { left: -30px; top: 0; animation-delay: 0s; }
+        .message-heart:nth-child(2) { right: -30px; top: 0; animation-delay: 1s; }
+        .message-heart:nth-child(3) { bottom: -30px; left: 50%; transform: translateX(-50%) rotate(-45deg); animation-delay: 0.5s; }
+        @keyframes floatMessageHeart {
+            0%, 100% { transform: translateY(0) rotate(-45deg) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-20px) rotate(-45deg) scale(1.2); opacity: 1; }
+        }
+
+        /* Main Content */
+        .decor {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .container {
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            max-width: 90%;
+            pointer-events: none;
+        }
+        .container h1,
+        .container p,
+        .container .button {
+            pointer-events: auto;
+        }
+        h1 {
+            font-size: 2.8em;
+            text-shadow: 0 0 15px #ffccff, 0 0 25px #ff99cc, 0 0 5px #ffffff;
+            animation: fadeIn 2s ease-in-out;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 1.3em;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            animation: fadeIn 3s ease-in-out;
+            line-height: 1.5;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        .moon {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, #fff8dc 50%, #f4e4bc 70%);
+            border-radius: 50%;
+            position: absolute;
+            top: 2%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 60px rgba(255, 255, 255, 0.9), 0 0 100px #ffccff;
+            animation: glow 4s infinite alternate;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .balloon {
+            width: 50px;
+            height: 70px;
+            background: radial-gradient(circle, #ff4d4d, #ff9999);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            cursor: grab;
+            box-shadow: 0 0 25px #ff4d4d;
+            animation: float 5s infinite ease-in-out;
+            z-index: 3;
+            pointer-events: auto;
+            touch-action: none;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid #ff4d4d;
+        }
+        .balloon.dragging {
+            cursor: grabbing;
+            box-shadow: 0 0 35px #ff1a1a;
+        }
+        .balloon.b1 { left: 10%; top: 20%; animation-delay: 1s; }
+        .balloon.b2 { right: 10%; top: 30%; animation-delay: 2s; }
+        .balloon.b3 { left: 20%; top: 50%; animation-delay: 0.5s; }
+        .balloon.b4 { right: 20%; top: 60%; animation-delay: 1.5s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(3deg); }
+            50% { transform: translateY(-35px) rotate(-3deg); }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.7), 0 0 80px #ffccff; }
+            100% { box-shadow: 0 0 60px rgba(255, 255, 255, 1), 0 0 120px #ff99cc; }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .heart {
+            color: #ff4d4d;
+            font-size: 1.6em;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        .button {
+            background: linear-gradient(45deg, #ff66b2, #ff99cc);
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 25px #ff66b2;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 15px;
+            touch-action: manipulation;
+            z-index: 10;
+        }
+        .button:hover, .button:active {
+            transform: scale(1.15);
+            box-shadow: 0 0 35px #ff33cc;
+        }
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2.5s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .loading-text {
+                font-size: 1.4em;
+            }
+            .message-popup {
+                font-size: 1em;
+                padding: 15px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            p {
+                font-size: 1.1em;
+                padding: 10px;
+            }
+            .moon {
+                width: 120px;
+                height: 120px;
+                top: 2%;
+            }
+            .balloon, .loading-balloon {
+                width: 40px;
+                height: 56px;
+            }
+            .balloon::after, .loading-balloon::after {
+                border-bottom: 8px solid #ff4d4d;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+            }
+            .loading-heart, .message-heart {
+                width: 24px;
+                height: 24px;
+            }
+            .loading-heart::before,
+            .loading-heart::after,
+            .message-heart::before,
+            .message-heart::after {
+                width: 24px;
+                height: 24px;
+            }
+            .loading-heart::before, .message-heart::before {
+                top: -12px;
+            }
+            .loading-heart::after, .message-heart::after {
+                left: 12px;
+            }
+            .button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-balloon"></div>
+        <div class="loading-balloon"></div>
+        <div class="loading-balloon"></div>
+        <div class="loading-heart"></div>
+        <div class="loading-heart"></div>
+        <div class="loading-heart"></div>
+        <div class="loading-text">Anh đang thắp ánh trăng cho em bé yêu... ❤️</div>
+    </div>
+
+    <!-- Message Popup -->
+    <div class="message-popup" id="messagePopup">
+        <div class="message-heart"></div>
+        <div class="message-heart"></div>
+        <div class="message-heart"></div>
+        <span id="messageText"></span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="stars" id="stars"></div>
+    <div class="decor">
+        <div class="moon"></div>
+        <div class="balloon b1" draggable="true"></div>
+        <div class="balloon b2" draggable="true"></div>
+        <div class="balloon b3" draggable="true"></div>
+        <div class="balloon b4" draggable="true"></div>
+    </div>
+    <div class="container">
+        <h1>Chúc Em Bé Trung Thu Lung Linh! 🌕</h1>
+        <p>Anh chúc em yêu một mùa Trung Thu ngọt ngào, đầy ánh trăng và niềm vui. <br> Em là bong bóng đỏ rực rỡ nhất trong tim anh! <span class="heart">❤️</span></p>
+        <button class="button" onclick="showMessage()">Bấm để nhận lời yêu thương!</button>
+    </div>
+
+    <script>
+        // Ẩn loading screen sau 3 giây
+        window.addEventListener('load', () => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+            }, 3000);
+        });
+
+        // Tạo ngôi sao lấp lánh
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 2.5}s`;
+            starsContainer.appendChild(star);
+        }
+
+        // Kéo thả bong bóng (hỗ trợ cả mobile)
+        const balloons = document.querySelectorAll('.balloon');
+        balloons.forEach(balloon => {
+            let isDragging = false;
+            let offsetX = 0, offsetY = 0;
+
+            // Xử lý kéo thả trên desktop
+            balloon.addEventListener('dragstart', (e) => {
+                isDragging = true;
+                balloon.classList.add('dragging');
+                try { e.dataTransfer.setData('text/plain', 'dragging'); } catch (err) {}
+            });
+            balloon.addEventListener('dragend', (e) => {
+                isDragging = false;
+                balloon.classList.remove('dragging');
+                const x = e.clientX - (balloon.offsetWidth / 2);
+                const y = e.clientY - (balloon.offsetHeight / 2);
+                balloon.style.left = `${x}px`;
+                balloon.style.top = `${y}px`;
+                if (Math.random() > 0.5) {
+                    const messages = [
+                        "Em kéo bong bóng xinh quá, anh yêu em nhiều hơn nữa! ❤️",
+                        "Bong bóng này bay cao, nhưng tình yêu của anh dành cho em còn cao hơn! 🎈",
+                        "Em là bong bóng đỏ, làm tim anh bay mãi không ngừng! 😘",
+                        "Kéo bong bóng giỏi thế, em làm anh mê mẩn luôn rồi! ❤️"
+                    ];
+                    showMessage(messages[Math.floor(Math.random() * messages.length)]);
+                }
+            });
+
+            // Xử lý kéo thả trên mobile
+            balloon.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                balloon.classList.add('dragging');
+                const touch = e.touches[0];
+                const rect = balloon.getBoundingClientRect();
+                offsetX = touch.clientX - rect.left;
+                offsetY = touch.clientY - rect.top;
+                e.preventDefault();
+            });
+            balloon.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const touch = e.touches[0];
+                    balloon.style.left = `${touch.clientX - offsetX}px`;
+                    balloon.style.top = `${touch.clientY - offsetY}px`;
+                }
+            });
+            balloon.addEventListener('touchend', () => {
+                isDragging = false;
+                balloon.classList.remove('dragging');
+                if (Math.random() > 0.5) {
+                    const messages = [
+                        "Em kéo bong bóng xinh quá, anh yêu em nhiều hơn nữa! ❤️",
+                        "Bong bóng này bay cao, nhưng tình yêu của anh dành cho em còn cao hơn! 🎈",
+                        "Em là bong bóng đỏ, làm tim anh bay mãi không ngừng! 😘",
+                        "Kéo bong bóng giỏi thế, em làm anh mê mẩn luôn rồi! ❤️"
+                    ];
+                    showMessage(messages[Math.floor(Math.random() * messages.length)]);
+                }
+            });
+        });
+
+        // Hiển thị thông điệp ngẫu nhiên trong popup
+        function showMessage(message = null) {
+            const messagePopup = document.getElementById('messagePopup');
+            const messageText = document.getElementById('messageText');
+            const messages = [
+                "Em là ánh trăng rằm, sáng mãi trong tim anh! 🥮❤️",
+                "Trăng Trung Thu đẹp, nhưng nụ cười em còn đẹp hơn! 😊",
+                "Anh thắp trăng cho em, để tình yêu chúng ta luôn sáng rực! 🌕💕",
+            ];
+            messageText.textContent = message || messages[Math.floor(Math.random() * messages.length)];
+            messagePopup.classList.add('show');
+            setTimeout(() => {
+                messagePopup.classList.remove('show');
+            }, 4000); // Ẩn sau 3 giây
+        }
+    </script>
+</body>
+</html>
